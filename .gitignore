@@ -18,3 +18,6 @@ exports/
 *.sqlite
 *.sqlite-shm
 *.sqlite-wal
+
+# Local app backups
+/gfou_backups/

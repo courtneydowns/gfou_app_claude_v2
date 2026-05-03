@@ -68,19 +68,55 @@ function verifyDatabase() {
   }
 }
 
+// Safe helper: only ALTER TABLE ADD COLUMN for columns that don't already exist.
+// SQLite has no "ADD COLUMN IF NOT EXISTS", so we check PRAGMA table_info first.
+function safeAddColumns(db, tableName, columns) {
+  const existing = new Set(
+    db.prepare(`PRAGMA table_info(${tableName})`).all().map(r => r.name)
+  );
+  for (const { name, def } of columns) {
+    if (!existing.has(name)) {
+      db.exec(`ALTER TABLE ${tableName} ADD COLUMN ${name} ${def}`);
+      console.log(`[DB] Added column ${tableName}.${name}`);
+    }
+  }
+}
+
 function runMigrations(db) {
   db.exec(`CREATE TABLE IF NOT EXISTS migrations (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE, applied_at TEXT NOT NULL DEFAULT (datetime('now')));`);
   const applied = new Set(db.prepare("SELECT name FROM migrations").all().map(r => r.name));
+
+  // Each migration is either { name, sql } or { name, fn } for migrations
+  // that require conditional logic (like safe column additions).
   const migrations = [
-    { name: "001_core_schema",       sql: MIGRATION_001 },
-    { name: "002_analysis_tables",   sql: MIGRATION_002 },
-    { name: "003_session_and_queue", sql: MIGRATION_003 },
+    { name: "001_core_schema",           sql: MIGRATION_001 },
+    { name: "002_analysis_tables",       sql: MIGRATION_002 },
+    { name: "003_session_and_queue",     sql: MIGRATION_003 },
+    { name: "004_scene_guidance_fields", fn:  migration004 },
   ];
+
   for (const m of migrations) {
     if (applied.has(m.name)) continue;
-    db.transaction(() => { db.exec(m.sql); db.prepare("INSERT INTO migrations (name) VALUES (?)").run(m.name); })();
+    db.transaction(() => {
+      if (typeof m.fn === "function") {
+        m.fn(db);
+      } else {
+        db.exec(m.sql);
+      }
+      db.prepare("INSERT INTO migrations (name) VALUES (?)").run(m.name);
+    })();
     console.log("[DB] Applied migration:", m.name);
   }
+}
+
+// Migration 004 — add new scene guidance fields without touching existing data.
+function migration004(db) {
+  safeAddColumns(db, "scenes", [
+    { name: "dont_forget",   def: "TEXT NOT NULL DEFAULT ''" },
+    { name: "source_anchor", def: "TEXT NOT NULL DEFAULT ''" },
+    { name: "do_not_do_this",def: "TEXT NOT NULL DEFAULT '[]'" },
+    { name: "stuck_bank",    def: "TEXT NOT NULL DEFAULT '{}'" },
+  ]);
 }
 
 const MIGRATION_001 = `

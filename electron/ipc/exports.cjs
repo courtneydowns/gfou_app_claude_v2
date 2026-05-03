@@ -9,13 +9,30 @@ function safeJSON(str, fallback) { try { return JSON.parse(str); } catch { retur
 function wc(t) { return String(t||"").trim().split(/\s+/).filter(Boolean).length; }
 function slug(s) { return String(s||"untitled").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/(^-|-$)/g,"").slice(0,48); }
 
-function gather(db) {
-  const scenes = db.prepare("SELECT * FROM scenes ORDER BY number ASC").all().map(s => ({
+// Parse a raw scenes DB row into a fully hydrated object for export.
+// Keeps all new guidance fields alongside legacy fields.
+function parseSceneForExport(s) {
+  const rawBank = safeJSON(s.stuck_bank, {});
+  return {
     ...s,
-    start_here: safeJSON(s.start_here, []),
-    stuck_options: safeJSON(s.stuck_options, []),
+    start_here:         safeJSON(s.start_here, []),
+    stuck_options:      safeJSON(s.stuck_options, []),
     success_looks_like: safeJSON(s.success_looks_like, []),
-  }));
+    do_not_do_this:     safeJSON(s.do_not_do_this, []),
+    stuck_bank: {
+      use_a_line:          Array.isArray(rawBank.use_a_line)          ? rawBank.use_a_line          : [],
+      start_a_sentence:    Array.isArray(rawBank.start_a_sentence)    ? rawBank.start_a_sentence    : [],
+      move_the_body:       Array.isArray(rawBank.move_the_body)       ? rawBank.move_the_body       : [],
+      change_the_pressure: Array.isArray(rawBank.change_the_pressure) ? rawBank.change_the_pressure : [],
+      end_the_beat:        Array.isArray(rawBank.end_the_beat)        ? rawBank.end_the_beat        : [],
+    },
+    dont_forget:   String(s.dont_forget   || ""),
+    source_anchor: String(s.source_anchor || ""),
+  };
+}
+
+function gather(db) {
+  const scenes = db.prepare("SELECT * FROM scenes ORDER BY number ASC").all().map(parseSceneForExport);
   const drafts       = Object.fromEntries(db.prepare("SELECT * FROM drafts").all().map(d => [d.scene_id, d.content]));
   const sourceMat    = db.prepare("SELECT * FROM source_material ORDER BY created_at ASC").all().map(m => ({...m, tags: safeJSON(m.tags,[])}));
   const rules        = db.prepare("SELECT * FROM rules WHERE active=1 ORDER BY created_at ASC").all();
@@ -63,14 +80,12 @@ function register() {
       const scenesDir = path.join(panicDir, "scenes");
       fs.mkdirSync(scenesDir, { recursive: true });
 
-      // Always write all files — empty array/object if table has no records
       writeFile(path.join(panicDir, "full_state.json"),
         JSON.stringify({ exportedAt: new Date().toISOString(), ...data }, null, 2));
 
       writeFile(path.join(panicDir, "manuscript.md"),  buildMd(data.scenes, data.drafts));
       writeFile(path.join(panicDir, "manuscript.txt"), buildTxt(data.scenes, data.drafts));
 
-      // Individual scene files — always one per scene even if draft is empty
       for (const s of data.scenes) {
         const fn = `${String(s.number||0).padStart(3,"0")}-${slug(s.title)}.txt`;
         writeFile(path.join(scenesDir, fn), [
@@ -83,7 +98,6 @@ function register() {
         ].join("\n"));
       }
 
-      // Always write these even when empty
       writeFile(path.join(panicDir, "source_material.json"),
         JSON.stringify(data.sourceMat.length ? data.sourceMat : [], null, 2));
       writeFile(path.join(panicDir, "continuity_ledger.json"),
@@ -111,8 +125,8 @@ function register() {
       const draft = db.prepare("SELECT content FROM drafts WHERE scene_id=?").get(sceneId);
       const fn    = `${String(scene.number||0).padStart(3,"0")}-${slug(scene.title)}-${new Date().toISOString().slice(0,10)}.txt`;
       const destDir = path.join(app.getPath("documents"), "gfou_exports", "scenes");
-        fs.mkdirSync(destDir, { recursive: true });
-        const dest  = path.join(destDir, fn);
+      fs.mkdirSync(destDir, { recursive: true });
+      const dest = path.join(destDir, fn);
       writeFile(dest, [`Scene ${scene.number}: ${scene.title}`,`System: ${scene.system} | Status: ${scene.status}`,`Function: ${scene.function||"—"}`,`Rule: ${scene.rule||"—"}`,"","--- DRAFT ---","", draft?.content||"(no draft yet)"].join("\n"));
       return { ok: true, path: dest, filename: fn };
     } catch (err) { return { ok: false, error: err.message }; }
