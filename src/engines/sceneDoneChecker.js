@@ -6,6 +6,7 @@
  */
 
 import checks from "../knowledge/devEditChecks.json";
+import { analyzeBodyGrounding } from "./bodyGrounding.js";
 
 const {
   bodyWords: BODY,
@@ -21,7 +22,7 @@ export function checkSceneDone(text = "") {
   const lower = clean.toLowerCase();
   const words = clean ? clean.split(/\s+/).length : 0;
 
-  const bodyHits    = BODY.filter((w) => lower.includes(w)).length;
+  const bodyGrounding = analyzeBodyGrounding(clean);
   const motionHits  = MOTION.filter((w) => lower.includes(w)).length;
   const explainHits = EXPLAIN_FLAGS.filter((w) => lower.includes(w)).length;
   const hasStop     = STOP_SIGNALS.some((w) => lower.includes(w));
@@ -32,9 +33,9 @@ export function checkSceneDone(text = "") {
     let detail = "";
 
     switch (def.type) {
-      case "body_hit_count":
-        pass = bodyHits >= def.threshold;
-        detail = `${bodyHits} body word${bodyHits !== 1 ? "s" : ""} found`;
+      case "body_sentence_ratio":
+        pass = bodyGrounding.pass;
+        detail = `${bodyGrounding.bodySentences}/${bodyGrounding.totalSentences} body-grounded sentences (${bodyGrounding.score}%)`;
         break;
       case "motion_hit_count":
         pass = motionHits >= def.threshold;

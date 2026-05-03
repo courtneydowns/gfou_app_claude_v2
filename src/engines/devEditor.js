@@ -7,6 +7,7 @@
 
 import devData from "../knowledge/devEditChecks.json";
 import { analyzeV0Text, splitSentences, BODY_WORDS } from "./ruleEngine.js";
+import { analyzeBodyGrounding } from "./bodyGrounding.js";
 import { checkSceneDone } from "./sceneDoneChecker.js";
 
 // ── Abstraction report ───────────────────────────────────────────
@@ -34,24 +35,22 @@ export function runAbstractionCheck(text, scene) {
 // ── Body check ───────────────────────────────────────────────────
 
 export function runBodyCheck(text) {
-  const sentences = splitSentences(text);
-  if (!sentences.length) {
-    return { type: "body", label: "Body Check", pass: false, score: 0, bodySentences: 0, totalSentences: 0, ratio: 0, summary: "No text." };
+  const body = analyzeBodyGrounding(text);
+
+  if (!body.totalSentences) {
+    return {
+      type: "body",
+      label: "Body Check",
+      ...body,
+      summary: "No text.",
+    };
   }
-  const bodyCount = sentences.filter((s) =>
-    BODY_WORDS.some((w) => s.toLowerCase().includes(w))
-  ).length;
-  const ratio = bodyCount / sentences.length;
-  const pass = ratio >= 0.6;
+
   return {
     type: "body",
     label: "Body Check",
-    pass,
-    score: Math.round(ratio * 100),
-    bodySentences: bodyCount,
-    totalSentences: sentences.length,
-    ratio,
-    summary: `${bodyCount}/${sentences.length} sentences contain body language (${Math.round(ratio * 100)}%). ${pass ? "Good." : "Needs more physical grounding."}`,
+    ...body,
+    summary: `${body.bodySentences}/${body.totalSentences} sentences contain body language (${body.score}%). ${body.pass ? "Good." : "Needs more physical grounding."}`,
   };
 }
 

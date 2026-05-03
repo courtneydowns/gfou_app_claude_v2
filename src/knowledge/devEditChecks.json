@@ -5,9 +5,9 @@
     {
       "id": "body_count",
       "label": "Body is carrying the scene",
-      "type": "body_hit_count",
-      "threshold": 5,
-      "fix": "Add concrete body and sensation details. Count should reach 5+ distinct body words."
+      "type": "body_sentence_ratio",
+      "threshold": 0.6,
+      "fix": "Add concrete body and sensation details. At least 60% of sentences should be physically grounded."
     },
     {
       "id": "motion_count",
