@@ -202,7 +202,36 @@ export default function SceneLibrary({ onOpenScene }) {
   );
 }
 
+// Extract a clean 1–2 sentence preview from raw master-scene notes.
+// Returns null if nothing clean can be extracted.
+function extractNotesPreview(notes) {
+  if (!notes) return null;
+  const text = String(notes);
+  const parts = [];
+
+  // Pull the final trailing descriptor from a heading like:
+  // ## [02/67] PROLOGUE — The Caretaker — body at rest
+  const headingMatch = text.match(/^##\s+\[[^\]]+\][^\n]*[—–-]\s*([^—–\n]+)\s*$/m);
+  if (headingMatch) {
+    const descriptor = headingMatch[1].trim();
+    if (descriptor && descriptor.length < 80) parts.push(descriptor.replace(/\.$/, "") + ".");
+  }
+
+  // Pull the short cup state value: "CUP STATE: Full — ..." → "Cup state: Full."
+  const cupMatch = text.match(/CUP\s+STATE:\s*([^—–\n]+)/i);
+  if (cupMatch) {
+    const cup = cupMatch[1].trim().replace(/\.$/, "");
+    if (cup && cup.length < 60) parts.push(`Cup state: ${cup}.`);
+  }
+
+  return parts.length > 0 ? parts.join(" ") : null;
+}
+
 function SceneCard({ scene, onOpen, onEdit, onArchive, onDelete }) {
+  const preview = scene.source_anchor
+    || scene.function
+    || extractNotesPreview(scene.notes)
+    || "Scene guidance available in Edit and V0 Writing.";
   return (
     <article className={`scene-card status-${scene.status?.toLowerCase()}`}>
       <div className="scene-card-top">
@@ -210,17 +239,8 @@ function SceneCard({ scene, onOpen, onEdit, onArchive, onDelete }) {
         <span className={`scene-status-badge s-${scene.status?.toLowerCase()}`}>{scene.status}</span>
       </div>
       <h2 className="scene-card-title">{scene.title}</h2>
-      <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
-        <span className="scene-badge">{scene.system}</span>
-      </div>
-      {scene.function && <p className="scene-card-fn">{scene.function}</p>}
-      {scene.rule && (
-        <div className="scene-card-rule">
-          <p className="rule-label">Non-Negotiable</p>
-          <p className="rule-text">{scene.rule}</p>
-        </div>
-      )}
-      {scene.notes && <p style={{ fontSize: 12, color: "var(--text-3)", fontStyle: "italic" }}>{scene.notes}</p>}
+      <span className="scene-badge" style={{ alignSelf: "flex-start" }}>{scene.system}</span>
+      <p className="scene-card-preview">{preview}</p>
       <div className="scene-card-actions">
         <button className="btn-accent" onClick={onOpen}>Open →</button>
         <button onClick={onEdit}>Edit</button>
