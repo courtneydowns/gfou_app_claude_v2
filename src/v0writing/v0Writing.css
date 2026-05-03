@@ -15,7 +15,7 @@
 /* ── NON-NEGOTIABLE block (always visible) ──────────────────────────────── */
 .v0-nn-block { margin:10px 0 0; border-top:1px solid var(--border-dim); padding-top:10px; }
 .v0-nn-label { font-size:10px; letter-spacing:.1em; text-transform:uppercase; color:var(--text-3); margin-bottom:5px; font-weight:600; }
-.v0-nn-text { font-size:13px; color:var(--text-1); background:#0f0e14; border:1px solid #2a2560; border-radius:var(--r-sm); padding:9px 11px; line-height:1.5; font-weight:500; }
+.v0-nn-text { font-size:13px; color:#f4f1ff; background:#0f0e14; border:1px solid #2a2560; border-radius:var(--r-sm); padding:9px 11px; line-height:1.5; font-weight:500; }
 
 /* ── Section toggle ──────────────────────────────────────────────────────── */
 .v0-section { border-top:1px solid var(--border-dim); }
