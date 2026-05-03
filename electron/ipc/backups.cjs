@@ -50,9 +50,44 @@ function register() {
 
   ipcMain.handle("backups:restore", async (_e, filename) => {
     const dir = getBackupDir();
+
+    // Guard: reject any path traversal — filename must be a bare name, no slashes
+    if (!filename || /[/\\]/.test(filename) || !filename.endsWith(".sqlite")) {
+      return { ok: false, error: "Invalid backup filename." };
+    }
+
     const src = path.join(dir, filename);
 
     if (!fs.existsSync(src)) return { ok: false, error: "Backup file not found." };
+
+    // Validate SQLite magic header BEFORE touching anything
+    try {
+      const SQLITE_MAGIC = Buffer.from("SQLite format 3\0");
+      const fd = fs.openSync(src, "r");
+      const header = Buffer.alloc(16);
+      fs.readSync(fd, header, 0, 16, 0);
+      fs.closeSync(fd);
+      if (!header.equals(SQLITE_MAGIC)) {
+        return { ok: false, error: "Selected file is not a valid SQLite database." };
+      }
+    } catch (err) {
+      return { ok: false, error: "Could not read backup file: " + err.message };
+    }
+
+    // Validate that the backup has the expected GFOU schema (scenes + migrations tables)
+    try {
+      const Database = require("better-sqlite3");
+      const testDb = new Database(src, { readonly: true });
+      const tables = new Set(
+        testDb.prepare("SELECT name FROM sqlite_master WHERE type='table'").all().map(r => r.name)
+      );
+      testDb.close();
+      if (!tables.has("scenes") || !tables.has("migrations")) {
+        return { ok: false, error: "Backup does not contain a valid GFOU database schema (missing scenes or migrations tables)." };
+      }
+    } catch (err) {
+      return { ok: false, error: "Backup file failed schema validation: " + err.message };
+    }
 
     let safeguardName = null;
     try {
