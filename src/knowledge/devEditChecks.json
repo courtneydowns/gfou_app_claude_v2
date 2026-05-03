@@ -1,0 +1,95 @@
+{
+  "_comment": "Scene completion and developmental editor checks. Loaded by src/engines/sceneDoneChecker.js and src/engines/devEditor.js.",
+
+  "completionChecks": [
+    {
+      "id": "body_count",
+      "label": "Body is carrying the scene",
+      "type": "body_hit_count",
+      "threshold": 5,
+      "fix": "Add concrete body and sensation details. Count should reach 5+ distinct body words."
+    },
+    {
+      "id": "motion_count",
+      "label": "Motion has happened",
+      "type": "motion_hit_count",
+      "threshold": 3,
+      "fix": "Move one body part one more time. The scene needs physical action."
+    },
+    {
+      "id": "word_count",
+      "label": "Scene has enough mass",
+      "type": "word_count",
+      "threshold": 250,
+      "fix": "Keep going. This is probably still an entry fragment. Scenes need mass."
+    },
+    {
+      "id": "explanation_check",
+      "label": "Explanation not taking over",
+      "type": "explanation_flag_max",
+      "threshold": 1,
+      "fix": "Cut the explanation. Return to body. The scene explains itself through sensation."
+    },
+    {
+      "id": "stop_signal",
+      "label": "Scene ends on a physical stop",
+      "type": "stop_signal_present",
+      "threshold": 1,
+      "fix": "End on stillness, failed motion, breath, weight, cold, or silence."
+    }
+  ],
+
+  "bodyWords": [
+    "throat", "jaw", "spine", "shoulder", "breath", "fingers", "hands",
+    "skin", "mouth", "chest", "sternum", "knee", "stomach", "carpet",
+    "floor", "cheek", "teeth", "tongue", "lungs", "neck", "body", "cold",
+    "hot", "shaking", "still", "weight", "wrist", "hips", "pulse", "palm",
+    "ribs", "eyes", "face", "hair", "back", "elbow", "ankle", "foot",
+    "feet", "thumb", "fist", "sweat", "blood"
+  ],
+
+  "motionWords": [
+    "moves", "move", "shifts", "drops", "drags", "closes", "opens",
+    "presses", "catches", "stalls", "turns", "pulls", "releases", "holds",
+    "tightens", "locks", "falls", "lands", "slides", "reaches", "grabs",
+    "pushes", "jerks", "snaps", "sags", "twists", "tilts", "curls",
+    "clenches", "spreads", "rises", "sinks", "lifts", "lowers", "flinches",
+    "shudders", "blinks", "swallows", "exhales", "inhales"
+  ],
+
+  "explanationFlags": [
+    "because", "realizes", "understands", "remembers", "knows that",
+    "this means", "this is why", "the reason", "symbolizes", "represents",
+    "trauma", "pattern", "always does", "never does", "this is how"
+  ],
+
+  "stopSignals": [
+    "does not move", "doesn't move", "stays", "still", "stops",
+    "goes quiet", "goes cold", "nothing", "no sound", "does not try",
+    "doesn't try", "nothing moves", "does not move again"
+  ],
+
+  "verdicts": {
+    "keepGoing": "KEEP GOING",
+    "likelyDone": "LIKELY DONE FOR NOW",
+    "done": "DONE ENOUGH — MOVE ON"
+  },
+
+  "devEditWarnings": [
+    {
+      "id": "scene_too_short",
+      "label": "Scene is too short for meaningful analysis",
+      "minWords": 100
+    },
+    {
+      "id": "no_body_words",
+      "label": "No body language detected — scene may be all summary",
+      "threshold": 0
+    },
+    {
+      "id": "too_many_explanations",
+      "label": "Explanation phrases are dominating the scene",
+      "threshold": 3
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "_comment": "All abstraction detection rules. Loaded by src/engines/ruleEngine.js. Edit here, never in JS.",
+
+  "patterns": [
+    {
+      "regex": "\\btries?\\b",
+      "flags": "gi",
+      "reason": "intention instead of action",
+      "fix": "Make the movement happen physically. Don't say she tries — write what the body does."
+    },
+    {
+      "regex": "\\bfeels?\\b",
+      "flags": "gi",
+      "reason": "emotional shortcut",
+      "fix": "Convert to body: breath, grip, jaw, stomach, weight, pressure."
+    },
+    {
+      "regex": "\\bthreatens?\\b",
+      "flags": "gi",
+      "reason": "abstract foreshadowing",
+      "fix": "Make the threat immediate. Write what the body does right now."
+    },
+    {
+      "regex": "\\bwants?\\b|\\bneeded?\\b|\\bmissed?\\b|\\bunderstands?\\b|\\brealizes?\\b|\\bknows?\\b",
+      "flags": "gi",
+      "reason": "meaning or interpretation instead of sensation",
+      "fix": "Remove explanation. Show body, contact, pressure, or breath instead."
+    },
+    {
+      "regex": "\\bdecides?\\b|\\bchooses?\\b|\\bremembers?\\b|\\bwonders?\\b",
+      "flags": "gi",
+      "reason": "thinking instead of body-first motion",
+      "fix": "Replace the thought with a physical movement."
+    },
+    {
+      "regex": "\\bbecause\\b|\\bsince\\b|\\bso that\\b|\\bin order to\\b",
+      "flags": "gi",
+      "reason": "causal explanation leaking into prose",
+      "fix": "Remove the cause. Split into pure physical beats."
+    },
+    {
+      "regex": "\\bcomfortable\\b|\\bunsafe\\b|\\bsafe\\b|\\bscared\\b|\\bafraid\\b|\\banxious\\b|\\bdesperate\\b|\\blonely\\b",
+      "flags": "gi",
+      "reason": "labeling an emotional state",
+      "fix": "Convert the label to body pressure, breath, grip, eyes, posture, or distance."
+    },
+    {
+      "regex": "\\bbeautiful\\b|\\bpretty\\b|\\bterrible\\b|\\bamazing\\b|\\bhorrible\\b|\\bawful\\b",
+      "flags": "gi",
+      "reason": "aesthetic judgment instead of physical specificity",
+      "fix": "Show what makes it that. A body reaction, a specific detail, a sensation."
+    },
+    {
+      "regex": "\\bseems?\\b|\\bappears?\\b|\\blooks like\\b",
+      "flags": "gi",
+      "reason": "observed interpretation, not direct physical fact",
+      "fix": "Write the physical fact, not the inference drawn from it."
+    },
+    {
+      "regex": "\\bsuddenly\\b|\\bquickly\\b|\\bslowly\\b|\\bcarefully\\b",
+      "flags": "gi",
+      "reason": "adverb qualifying motion instead of showing it",
+      "fix": "Remove the adverb. Show the speed or quality through the movement itself."
+    }
+  ],
+
+  "bodyWords": [
+    "hand", "hands", "finger", "fingers", "thumb", "skin", "breath", "throat",
+    "jaw", "mouth", "neck", "shoulder", "chest", "stomach", "spine", "hip",
+    "hips", "knee", "knees", "eyes", "face", "wrist", "pulse", "body", "weight",
+    "hair", "cheek", "carpet", "floor", "palm", "back", "teeth", "tongue",
+    "sternum", "ribs", "lungs", "cold", "hot", "shaking", "still", "wetness",
+    "sweat", "blood", "nail", "nails", "elbow", "ankle", "foot", "feet",
+    "forehead", "temple", "lip", "lips", "belly", "thigh", "calf", "fist",
+    "knuckle", "knuckles", "collarbone", "clavicle", "armpit", "scalp"
+  ],
+
+  "doneSignals": [
+    "does not move",
+    "doesn't move",
+    "does not move again",
+    "doesn't move again",
+    "stays still",
+    "goes still",
+    "goes quiet",
+    "goes cold",
+    "does not try",
+    "doesn't try",
+    "it doesn't try again",
+    "it does not try again",
+    "nothing moves",
+    "no sound"
+  ],
+
+  "compressionThreshold": 24,
+
+  "bodyCheckMinimumRatio": 0.6
+}

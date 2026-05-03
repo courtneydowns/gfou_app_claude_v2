@@ -1,0 +1,42 @@
+{
+  "_comment": "Continuity check rules. Loaded by src/engines/continuityEngine.js.",
+
+  "keywordMinLength": 4,
+
+  "properNounPattern": "^[A-Z]",
+
+  "duplicateThreshold": 1,
+
+  "entryTypes": [
+    { "id": "fact",      "label": "Fact",      "description": "A stated fact about the scene or character" },
+    { "id": "character", "label": "Character", "description": "Character detail, trait, or established behavior" },
+    { "id": "location",  "label": "Location",  "description": "A place or physical setting" },
+    { "id": "object",    "label": "Object",    "description": "A specific physical object in the narrative" },
+    { "id": "timeline",  "label": "Timeline",  "description": "A time reference, sequence, or ordering fact" },
+    { "id": "rule",      "label": "Rule",      "description": "A rule established in the narrative itself" }
+  ],
+
+  "crossSceneChecks": [
+    {
+      "id": "name_consistency",
+      "label": "Character names consistent across scenes",
+      "description": "Same character should not appear under different names in different scenes."
+    },
+    {
+      "id": "object_continuity",
+      "label": "Objects established in earlier scenes remain",
+      "description": "An object present in scene A should not disappear without explanation in scene B."
+    },
+    {
+      "id": "location_logic",
+      "label": "Location logic holds",
+      "description": "Characters cannot be in two places at once. Travel time must be plausible."
+    }
+  ],
+
+  "flagMessages": {
+    "potentialDuplicate": "appears multiple times — verify this is intentional",
+    "ledgerConflict": "conflicts with a continuity ledger entry",
+    "noIssues": "No continuity flags against ledger."
+  }
+}

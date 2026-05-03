@@ -1,0 +1,32 @@
+{
+  "_comment": "Rhythm analysis thresholds and messages. Loaded by src/engines/rhythmEngine.js.",
+
+  "minSentencesForEval": 3,
+  "longSentenceWordThreshold": 20,
+  "shortSentenceWordThreshold": 5,
+  "minStdDevForPass": 3.0,
+  "maxLongSentenceRatio": 0.25,
+  "idealAverageWordRange": { "min": 6, "max": 14 },
+
+  "scoring": {
+    "stdDevWeight": 5,
+    "maxScore": 100
+  },
+
+  "messages": {
+    "tooFewSentences": "Too few sentences to evaluate rhythm. Write at least 3.",
+    "goodVariation": "Good variation — rhythm supports the physical momentum.",
+    "tooManyLong": "Too many long sentences. Break them into shorter physical beats. Long sentences carry explanation.",
+    "lowVariation": "Low variation — sentences feel the same length. Mix short impact with longer movement.",
+    "highAverage": "Average sentence is long. Compression is likely. Break into beats."
+  },
+
+  "motionWords": [
+    "moves", "move", "shifts", "shift", "drops", "drop", "drags", "drag",
+    "closes", "opens", "presses", "catches", "stalls", "turns", "pulls",
+    "releases", "holds", "tightens", "locks", "falls", "lands", "slides",
+    "reaches", "grabs", "pushes", "jerks", "snaps", "sags", "twists",
+    "tilts", "curls", "uncurls", "flexes", "clenches", "spreads", "rises",
+    "sinks", "lifts", "lowers", "swings", "drags", "shudders", "flinches"
+  ]
+}

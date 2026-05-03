@@ -1,0 +1,43 @@
+{
+  "_comment": "Stuck prompts and forward directives. Loaded by src/engines/ruleEngine.js.",
+
+  "emptyStateDirective": "Pick a START HERE line. Write one physical sentence.",
+
+  "doneDirective": "Stop immediately. Do not add anything past this sentence.",
+
+  "defaultDirective": "Continue — contact → body response → movement.",
+
+  "forwardDirectives": [
+    { "trigger": "breath",             "directive": "Move to hands, throat, stomach, or pressure." },
+    { "trigger": "hand",               "directive": "Show the body response to that contact." },
+    { "trigger": "finger",             "directive": "Show the body response to that contact." },
+    { "trigger": "thumb",              "directive": "Show the body response to that contact." },
+    { "trigger": "stomach",            "directive": "Show movement or stillness in the stomach." },
+    { "trigger": "screen",             "directive": "Show thumb, grip, the light hitting eyes, or breath." },
+    { "trigger": "phone",              "directive": "Show thumb, grip, the light hitting eyes, or breath." },
+    { "trigger": "still",              "directive": "Pressure increases, breath changes, or movement finally breaks." },
+    { "trigger": "freezes",            "directive": "Pressure increases, breath changes, or movement finally breaks." },
+    { "trigger": "jaw",                "directive": "Throat, breath, or hands next." },
+    { "trigger": "teeth",              "directive": "Throat, breath, or hands next." },
+    { "trigger": "shoulder",           "directive": "Weight shifts, or something contacts the skin." },
+    { "trigger": "spine",              "directive": "Weight shifts, or something contacts the skin." },
+    { "trigger": "chest",              "directive": "Breath, or the pressure of contact — what is touching it?" },
+    { "trigger": "throat",             "directive": "Jaw, breath, or swallow. What does the throat do?" },
+    { "trigger": "eye",                "directive": "What do the eyes move toward or away from?" },
+    { "trigger": "floor",              "directive": "Weight, contact, cold or warmth from the surface." },
+    { "trigger": "carpet",             "directive": "Weight, contact, cold or warmth from the surface." }
+  ],
+
+  "defaultStuckOptions": [
+    "Her fingers drag through the carpet.",
+    "Her throat closes around nothing.",
+    "Her shoulder takes the weight.",
+    "Her breath catches halfway in.",
+    "Her jaw locks.",
+    "Her hand closes around it.",
+    "She does not move.",
+    "The weight of it settles."
+  ],
+
+  "defaultStuckDirective": "Drop to contact: skin, breath, weight, pressure. One body part, one motion."
+}

@@ -1,0 +1,70 @@
+{
+  "_comment": "Voice lock rules. Loaded by src/engines/voiceLock.js.",
+
+  "registers": [
+    {
+      "id": "body-first",
+      "label": "Body-First",
+      "description": "Sensation and motion lead. No meaning stated. Body acts, body responds."
+    },
+    {
+      "id": "aftermath",
+      "label": "Aftermath",
+      "description": "Body in stillness after event. Minimal motion. Weight and temperature dominate."
+    },
+    {
+      "id": "external",
+      "label": "External Observation",
+      "description": "Distance from body. What the eye sees, not what the body feels. Used sparingly."
+    }
+  ],
+
+  "bodyWords": [
+    "hand", "breath", "jaw", "throat", "shoulder", "chest",
+    "stomach", "weight", "skin", "spine"
+  ],
+
+  "stillnessWords": [
+    "still", "does not move", "stays", "cold", "heavy", "nothing"
+  ],
+
+  "prohibitedPhrases": [
+    "she thought about",
+    "he thought about",
+    "they thought about",
+    "it occurred to",
+    "she realized that",
+    "he realized that",
+    "she knew that",
+    "he knew that",
+    "she could feel",
+    "he could feel",
+    "she was feeling",
+    "he was feeling",
+    "it felt like",
+    "something inside",
+    "deep down",
+    "in her heart",
+    "in his heart",
+    "a part of her",
+    "a part of him",
+    "she told herself",
+    "he told himself",
+    "she reminded herself",
+    "he reminded herself"
+  ],
+
+  "allowedCorrectionLanguage": [
+    "her [body part] [verb]",
+    "his [body part] [verb]",
+    "the [noun] [verb]",
+    "[body part] against [surface]",
+    "[body part] and [body part]",
+    "no [motion]",
+    "[body part] does not move"
+  ],
+
+  "warningThreshold": 2,
+
+  "passThreshold": 0
+}
