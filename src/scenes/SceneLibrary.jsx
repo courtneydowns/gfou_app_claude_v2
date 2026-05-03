@@ -3,7 +3,7 @@ import { scenes as scenesApi, exports_ } from "../lib/api.js";
 import { createToast } from "../components/toast.js";
 import "./sceneLibrary.css";
 
-const STATUSES = ["Draft", "Canon", "Archived", "Practice"];
+const STATUSES = ["Draft", "Canon", "Archived"];
 const SYSTEMS  = ["Mask", "Fuel", "Break", "Exception", "Shattering", "Unassigned"];
 const MANUSCRIPT_STATUSES = ["Draft", "Canon", "Archived"];
 

@@ -171,8 +171,22 @@ export default function V0WritingPanel({ sceneId: providedSceneId, onBackToLibra
   async function handleSceneSwitch(e) {
     const nextId = e.target.value;
     if (nextId === sceneId) return;
+
     if (scene?.id) await draftsApi.save(scene.id, text);
+
+    // Refresh scene records on switch so guidance/sidebar fields cannot stay stale.
+    try {
+      const freshScenes = await scenesApi.getAll();
+      setAllScenes(freshScenes || []);
+    } catch (err) {
+      createToast("Scene switched, but refresh failed: " + err.message, "error");
+    }
+
     setSceneId(nextId);
+    setAnalysisText("");
+    setSelectedFindingKey(null);
+    setOpenSection("");
+    setDoNotDoOpen(false);
     createToast("Scene loaded.", "info");
   }
 
@@ -332,7 +346,7 @@ export default function V0WritingPanel({ sceneId: providedSceneId, onBackToLibra
       <div className="v0-grid">
 
         {/* ── LEFT SIDEBAR ── */}
-        <aside className="v0-card">
+        <aside key={scene.id} className="v0-card">
           <p className="v0-label">Scene</p>
           <select value={scene.id} onChange={handleSceneSwitch}>
             {allScenes.map(s => (
@@ -386,6 +400,7 @@ export default function V0WritingPanel({ sceneId: providedSceneId, onBackToLibra
           {/* 5. I'M STUCK — subcategory rescue bank */}
           <Section label="I'M STUCK" open={openSection === "stuck"} onToggle={() => toggleSection("stuck")}>
             <StuckPanel
+              key={scene.id}
               scene={scene}
               stuckBank={stuckBank}
               locked={draftLocked}
